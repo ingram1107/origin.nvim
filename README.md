@@ -23,8 +23,8 @@ use 'ingram1107/origin.nvim'
 
 ## Usage
 
-As Neovim has a fresh start, this plugin will set the current working directory
-as the parent directory of the file that you first open.
+As Neovim has a fresh start, this plugin will set the parent directory of the
+file that you first open as the current working directory.
 
 This plugin provide two functions for its users. `Origin` to print the current
 working directory, similarly `pwd` in native Vim. `OriginSetRoot` to set the
@@ -45,7 +45,7 @@ Neovim lua cmds
 
 ```viml
 :lua require('origin').origin() " same with :Origin
-:lua require('origin').set_root() " same with OriginSetRoot
+:lua require('origin').set_root() " same with :OriginSetRoot
 ```
 
 ## Plugins Recommendations
