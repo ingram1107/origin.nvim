@@ -2,6 +2,11 @@
 -- TODO:
 --    neovim should have an option to call similar api func to getcwd()
 --      - littleclover  Fri 12 Mar 2021 08:22:16 PM +08
+if vim.version().minor < 5 then
+  vim.api.nvim_err_writeln("origin: require Neovim version 0.5.0")
+  return
+end
+
 local root = vim.fn.getcwd()
 
 local function origin()
