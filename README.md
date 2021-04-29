@@ -50,5 +50,5 @@ Neovim lua cmds
 
 ## Plugins Recommendations
 
-- [vim-rooter][https://github.com/airblade/vim-rooter] (main inspiration,
+- [vim-rooter](https://github.com/airblade/vim-rooter) (main inspiration,
   provide more thorough functionalities)
