@@ -20,8 +20,23 @@ local function set_root(dir)
     dir = vim.fn.expand("%:p:h")
   end
 
-  local ds = ft_table[vim.bo.filetype]
-  if ds ~= nil and ds == vim.fn.substitute(vim.fn.expand(dir), "\\zs.*\\ze"..ds.."$", "", "") then
+  local ds = function (val_or_tab)
+    if type(val_or_tab) ~= "table" then
+      return val_or_tab
+    end
+
+    local tab = val_or_tab
+    for _, val in pairs(tab) do
+      if val == vim.fn.substitute(vim.fn.expand(dir), "\\zs.*\\ze"..val.."$", "", "") then
+        return val
+      end
+    end
+
+    return nil
+  end
+
+  ds = ds(ft_table[vim.bo.filetype])
+  if ds ~= nil then
     root = vim.fn.substitute(vim.fn.expand(dir), ".*\\zs\\/"..ds.."\\ze$", "", "")
     vim.api.nvim_set_current_dir(root)
   else
