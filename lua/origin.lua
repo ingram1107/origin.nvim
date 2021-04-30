@@ -20,30 +20,38 @@ local function default_source(table)
   end
 end
 
-local function set_root(dir)
+local function set_root(args)
+  setmetatable(args, { __index = { manual = false } })
+  local dir, manual = args[1] or args.dir, args[2] or args.manual
+
   if dir == nil or dir == '' then
     dir = vim.fn.expand("%:p:h")
   end
 
-  local ds = function (val_or_tab)
-    if type(val_or_tab) ~= "table" then
-      return val_or_tab
-    end
-
-    local tab = val_or_tab
-    for _, val in pairs(tab) do
-      if val == vim.fn.substitute(vim.fn.expand(dir), "\\zs.*\\ze"..val.."$", "", "") then
-        return val
+  if not manual then
+    local ds = function (val_or_tab)
+      if type(val_or_tab) ~= "table" then
+        return val_or_tab
       end
+
+      local tab = val_or_tab
+      for _, val in pairs(tab) do
+        if val == vim.fn.substitute(vim.fn.expand(dir), "\\zs.*\\ze"..val.."$", "", "") then
+          return val
+        end
+      end
+
+      return nil
     end
 
-    return nil
-  end
-
-  ds = ds(ft_table[vim.bo.filetype])
-  if ds ~= nil then
-    root = vim.fn.substitute(vim.fn.expand(dir), ".*\\zs\\/"..ds.."\\ze$", "", "")
-    vim.api.nvim_set_current_dir(root)
+    ds = ds(ft_table[vim.bo.filetype])
+    if ds ~= nil or ds == '' then
+      root = vim.fn.substitute(vim.fn.expand(dir), ".*\\zs\\/"..ds.."\\ze$", "", "")
+      vim.api.nvim_set_current_dir(root)
+    else
+      root = vim.fn.expand(dir)
+      vim.api.nvim_set_current_dir(root)
+    end
   else
     root = vim.fn.expand(dir)
     vim.api.nvim_set_current_dir(root)

@@ -26,10 +26,13 @@ use 'ingram1107/origin.nvim'
 As Neovim has a fresh start, this plugin will set the parent directory of the
 file that you first open as the current working directory.
 
-This plugin provide two operatinoal functions for its users. `Origin` to print
-the current working directory, similarly `pwd` in native Vim. `OriginSetRoot` to
-set the current working directory as you want (empty string implies parent
-directory of the current file).
+This plugin provide three operational functions for its users. `Origin` to print
+the current working directory, similarly `pwd` in native Vim.
+`OriginSetDefaultRoot` and `OriginSetManualRoot` are used to set the current
+working directory as you want (empty string implies parent directory of the
+current file). The difference between these two commands are that the operations
+of `OriginSetDefaultRoot` can be affected by the logic introduced in the
+`default_source` configuration whereas `OriginSetManualRoot` cannot.
 
 To change the current working directory, you may use either Vim commands or
 Neovim lua commands.
@@ -38,19 +41,21 @@ Vim cmds
 
 ```viml
 :Origin
-:OriginSetRoot
+:OriginSetDefaultRoot
+:OriginSetManualRoot
 ```
 
 Neovim lua cmds
 
 ```viml
 :lua require('origin').origin() " same with :Origin
-:lua require('origin').set_root() " same with :OriginSetRoot
+:lua require('origin').set_root{} " same with :OriginSetDefaultRoot
+:lua require('origin').set_root{'', true} " same with :OriginSetManualRoot
 ```
 
-You may change the logic on which directory/ies is/are the sub-directory/ies for
-the project root by configure through the lua function `default_source` as
-follow:
+You may change the operational logic of `OriginSetDefaultRoot` on which
+directory/ies is/are the sub-directory/ies for the project root by configure
+through the lua function `default_source` as follow:
 
 ```lua
 require('origin').default_source {

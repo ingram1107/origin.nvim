@@ -9,9 +9,10 @@ if exists("+autochdir") && &autochdir
 endif
 
 command! -nargs=0 Origin lua require('origin').origin()
-command! -nargs=? -complete=dir OriginSetRoot lua require('origin').set_root("<args>")
+command! -nargs=? -complete=dir OriginSetDefaultRoot lua require('origin').set_root{"<args>"}
+command! -nargs=? -complete=dir OriginSetManualRoot lua require('origin').set_root{"<args>", true}
 
 aug Origin
   au!
-  au VimEnter * OriginSetRoot %:p:h
+  au VimEnter * OriginSetDefaultRoot %:p:h
 aug END
