@@ -20,6 +20,14 @@ local function default_source(table)
   end
 end
 
+local function is_dir_exist(dir)
+  if vim.fn.isdirectory(dir) == 1 then
+    return dir
+  end
+
+  return nil
+end
+
 local function set_root(args)
   setmetatable(args, { __index = { manual = false } })
   local dir, manual = args[1] or args.dir, args[2] or args.manual
@@ -46,18 +54,28 @@ local function set_root(args)
 
     ds = ds(ft_table[vim.bo.filetype])
     if ds ~= nil or ds == '' then
-      root = vim.fn.substitute(vim.fn.expand(dir), ".*\\zs\\/"..ds.."\\ze$", "", "")
-      vim.api.nvim_set_current_dir(root)
+      root = is_dir_exist(vim.fn.substitute(vim.fn.expand(dir), ".*\\zs\\/"..ds.."\\ze$", "", ""))
+      if root ~= nil then
+        vim.api.nvim_set_current_dir(root)
+      end
     else
-      root = vim.fn.expand(dir)
-      vim.api.nvim_set_current_dir(root)
+      root = is_dir_exist(vim.fn.expand(dir))
+      if root ~= nil then
+        vim.api.nvim_set_current_dir(root)
+      end
     end
   else
-    root = vim.fn.expand(dir)
-    vim.api.nvim_set_current_dir(root)
+    root = is_dir_exist(vim.fn.expand(dir))
+    if root ~= nil then
+      vim.api.nvim_set_current_dir(root)
+    end
   end
 
-  vim.api.nvim_echo({{"Change root directory to `"..root.."`", "Normal"}}, true, {})
+  if root ~= nil then
+    vim.api.nvim_echo({{"Change root directory to `"..root.."`", "Normal"}}, true, {})
+  else
+    vim.api.nvim_echo({{"No change to root directory", "Normal"}}, true, {})
+  end
 end
 
 return {
