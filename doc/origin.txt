@@ -1,0 +1,54 @@
+*origin.lua* a Neovim plugin that provide functionalities to set your cwd
+
+Author: Little Clover
+Licence: GPLv3 (see <https://www.gnu.org/licenses/>)
+
+=============================================================================
+                                                                 *origin.lua*
+
+A Neovim plugin that help you to set your current working directory. By
+default, this plugin will set the parent directory of the first open file as
+the current working directory as you fresh start Neovim.
+
+You can later set your current working directory by using |origin.set_root| or
+permanently change the default root directory by customising the variable
+|origin.default_source|.
+
+=============================================================================
+                                                             *origin.command*
+
+origin()                                                      *origin.origin*
+:Origin                                                             *:Origin*
+	Print the current working directory, similarly |pwd| in Vim. You could
+	call this function with Vim command or Neovim Lua command.
+
+set_root{dir, manual = false}                               *origin.set_root*
+:OriginSetDefaultRoot                                  *OriginSetDefaultRoot*
+:OriginSetManualRoot                                    *OriginSetManualRoot*
+	Manually set current working directory according to the arguments or
+	which Vim command is called. If the `manual` is false or
+	`OriginSetDefaultRoot` is called, the current working directory will
+	be set according to 'dir' and the logic specified by
+	|origin.default_source|. If the `manual` is true or
+	`OriginSetManualRoot` is called, the current working directory will be
+	set to `dir`. Both Vim commands accept only 1 arguments.
+
+=============================================================================
+                                                              *origin.config*
+
+default_source{}                                      *origin.default_source*
+	Set the operational logic of |origin.set_root| or
+	|:OriginSetDefaultRoot| to set the root directory by passing a table
+	consists of directory/ies that should be the sub-directory/ies for the
+	project root.
+
+	Usage:
+
+>
+	require('origin').default_source {
+  	lua = "lua",
+  	c = { "src", "lib", "test" },
+	}
+<
+
+  vim:tw=78:ts=8:ft=help:norl:
