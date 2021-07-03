@@ -5,7 +5,7 @@ directory.
 
 ## Requirement
 
-Neovim nightly
+Neovim 0.5+
 
 ## Installation
 
