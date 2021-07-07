@@ -86,7 +86,7 @@ local function set_root(args)
   end
 
   if root ~= nil then
-    vim.api.nvim_echo({{"Change root directory to `"..root.."`", "Normal"}}, true, {})
+    vim.api.nvim_echo({{"Change root directory to `"..vim.fn.expand(root).."`", "Normal"}}, true, {})
   else
     vim.api.nvim_echo({{"No change to root directory", "Normal"}}, true, {})
   end
