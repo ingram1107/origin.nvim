@@ -58,9 +58,11 @@ directory/ies is/are the sub-directory/ies for the project root by configure
 through the lua function `default_source` as follow:
 
 ```lua
-require('origin').default_source {
-  lua = "lua",
-  c = { "src", "lib", "test" },
+require('origin').setup {
+  default_source = {
+    lua = "lua",
+    c = { "src", "lib", "test" },
+  },
 }
 ```
 
@@ -68,9 +70,11 @@ Or if you prefer VimL:
 
 ```viml
 lua << EOF
-require('origin').default_source {
-  lua = "lua",
-  c = { "src", "lib", "test" },
+require('origin').setup {
+  default_source = {
+    lua = "lua",
+    c = { "src", "lib", "test" },
+  },
 }
 EOF
 ```

@@ -23,6 +23,7 @@ end
 
 local ft_table = {}
 local root = vim.fn.getcwd()
+local prompt = true
 
 local function origin()
   vim.api.nvim_echo({{root, "Normal"}}, false, {})
@@ -85,15 +86,26 @@ local function set_root(args)
     end
   end
 
-  if root ~= nil then
-    vim.api.nvim_echo({{"Change root directory to `"..vim.fn.expand(root).."`", "Normal"}}, true, {})
-  else
-    vim.api.nvim_echo({{"No change to root directory", "Normal"}}, true, {})
+  if prompt == true then
+    if root ~= nil then
+      vim.api.nvim_echo({{"Change root directory to `"..vim.fn.expand(root).."`", "Normal"}}, true, {})
+    else
+      vim.api.nvim_echo({{"No change to root directory", "Normal"}}, true, {})
+    end
+  end
+end
+
+local function setup(cfg_tbl)
+  if cfg_tbl['default_source'] ~= nil and type(cfg_tbl['default_source']) == 'table' then
+    default_source(cfg_tbl['default_source'])
+  end
+  if cfg_tbl['prompt'] ~= nil and type(cfg_tbl['prompt']) == 'boolean' then
+    prompt = cfg_tbl['prompt']
   end
 end
 
 return {
   origin = origin,
-  default_source = default_source,
   set_root = set_root,
+  setup = setup,
 }

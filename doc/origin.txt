@@ -36,19 +36,29 @@ set_root{dir, manual = false}                               *origin.set_root*
 =============================================================================
                                                               *origin.config*
 
-default_source{}                                      *origin.default_source*
+setup(config_table)                                            *origin.setup*
+	Setup origin.nvim configurations.
+
+	Usage:
+
+>
+	require('origin').setup {
+		default_source = {
+			lua = 'lua',
+			c = { 'src', 'lib', 'test' },
+		},
+		prompt = true,
+	}
+<
+
+default_source                                        *origin.default_source*
 	Set the operational logic of |origin.set_root| or
 	|:OriginSetDefaultRoot| to set the root directory by passing a table
 	consists of directory/ies that should be the sub-directory/ies for the
 	project root.
 
-	Usage:
-
->
-	require('origin').default_source {
-  	lua = "lua",
-  	c = { "src", "lib", "test" },
-	}
-<
+prompt                                                        *origin.prompt*
+	A boolean value decide whether or not to display root directory
+	changing to the Vim message buffer. Default: `true`.
 
   vim:tw=78:ts=8:ft=help:norl:
