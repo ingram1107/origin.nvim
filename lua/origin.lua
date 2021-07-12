@@ -54,7 +54,8 @@ local function set_root(args)
   local dir_full_path = vim.fn.expand(dir)
 
   if not manual then
-    local ds = function (val_or_tab)
+    local ds, nested = (function ()
+      local val_or_tab = ft_table[vim.bo.filetype]
       if type(val_or_tab) ~= "table" then
         return val_or_tab
       end
@@ -76,10 +77,8 @@ local function set_root(args)
       end
 
       return nil
-    end
+    end)()
 
-    local nested
-    ds, nested = ds(ft_table[vim.bo.filetype])
     if ds ~= nil or ds == '' then
       if not nested then
         root = is_dir_exist(vim.fn.substitute(dir_full_path, ".*\\zs/"..ds.."\\ze$", "", ""))
