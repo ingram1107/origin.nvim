@@ -58,18 +58,33 @@ local function set_root(args)
       end
 
       local tab = val_or_tab
+      local full_path = vim.fn.expand(dir)
+      local nested = false
       for _, val in pairs(tab) do
-        if val == vim.fn.substitute(vim.fn.expand(dir), "\\zs.*\\ze"..val.."$", "", "") then
-          return val
+        local path_tail = vim.fn.substitute(full_path, "\\zs.*/\\ze"..val.."$", "", "")
+        local match_relative_path = vim.fn.substitute(path_tail, "\\zs.*\\ze"..val.."/", "", "")
+        local match_val = vim.fn.substitute(match_relative_path, val.."\\zs/.*", "", "")
+
+        if val == path_tail then
+          return val, nested
+        elseif val == match_val then
+          nested = true
+          return val, nested
         end
       end
 
       return nil
     end
 
-    ds = ds(ft_table[vim.bo.filetype])
+    local nested
+    ds, nested = ds(ft_table[vim.bo.filetype])
     if ds ~= nil or ds == '' then
-      root = is_dir_exist(vim.fn.substitute(vim.fn.expand(dir), ".*\\zs\\/"..ds.."\\ze$", "", ""))
+      if not nested then
+        root = is_dir_exist(vim.fn.substitute(vim.fn.expand(dir), ".*\\zs/"..ds.."\\ze$", "", ""))
+      else
+        root = is_dir_exist(vim.fn.substitute(vim.fn.expand(dir), ".*\\zs/"..ds..".*", "", ""))
+      end
+
       if root ~= nil then
         vim.api.nvim_set_current_dir(root)
       end
