@@ -51,6 +51,8 @@ local function set_root(args)
     dir = vim.fn.expand("%:p:h")
   end
 
+  local dir_full_path = vim.fn.expand(dir)
+
   if not manual then
     local ds = function (val_or_tab)
       if type(val_or_tab) ~= "table" then
@@ -80,22 +82,22 @@ local function set_root(args)
     ds, nested = ds(ft_table[vim.bo.filetype])
     if ds ~= nil or ds == '' then
       if not nested then
-        root = is_dir_exist(vim.fn.substitute(vim.fn.expand(dir), ".*\\zs/"..ds.."\\ze$", "", ""))
+        root = is_dir_exist(vim.fn.substitute(dir_full_path, ".*\\zs/"..ds.."\\ze$", "", ""))
       else
-        root = is_dir_exist(vim.fn.substitute(vim.fn.expand(dir), ".*\\zs/"..ds..".*", "", ""))
+        root = is_dir_exist(vim.fn.substitute(dir_full_path, ".*\\zs/"..ds..".*", "", ""))
       end
 
       if root ~= nil then
         vim.api.nvim_set_current_dir(root)
       end
     else
-      root = is_dir_exist(vim.fn.expand(dir))
+      root = is_dir_exist(dir_full_path)
       if root ~= nil then
         vim.api.nvim_set_current_dir(root)
       end
     end
   else
-    root = is_dir_exist(vim.fn.expand(dir))
+    root = is_dir_exist(dir_full_path)
     if root ~= nil then
       vim.api.nvim_set_current_dir(root)
     end
