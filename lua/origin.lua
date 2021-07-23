@@ -13,16 +13,13 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
 
--- TODO:
---    neovim should have an option to call similar api func to getcwd()
---      - littleclover  Fri 12 Mar 2021 08:22:16 PM +08
 if vim.version().minor < 5 then
   vim.api.nvim_err_writeln("fatal: origin: require Neovim version 0.5+")
   return
 end
 
 local ft_table = {}
-local root = vim.fn.getcwd()
+local root = vim.loop.cwd()
 local prompt = true
 
 local function origin()
@@ -102,7 +99,7 @@ local function set_root(args)
     end
   end
 
-  root = vim.fn.getcwd()
+  root = vim.loop.cwd()
 
   if prompt == true then
     if root ~= nil then
