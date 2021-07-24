@@ -61,9 +61,30 @@ local function set_root(args)
       local full_path = vim.fn.expand(dir)
       local nested = false
       for _, val in pairs(tab) do
-        local path_tail = vim.fn.substitute(full_path, "\\zs.*/\\ze"..val.."$", "", "")
-        local match_relative_path = vim.fn.substitute(path_tail, "\\zs.*\\ze"..val.."/", "", "")
-        local match_val = vim.fn.substitute(match_relative_path, val.."\\zs/.*", "", "")
+        local path_tail
+        local match_relative_path
+        local match_val
+        local offset, endpoint = string.find(full_path, '/'..val..'$')
+
+        if offset ~= nil then
+          path_tail = string.sub(full_path, offset+1)
+        else
+          path_tail = full_path
+        end
+
+        offset = string.find(path_tail, val..'/')
+        if offset ~= nil then
+          match_relative_path = string.sub(path_tail, offset)
+        else
+          match_relative_path = path_tail
+        end
+
+        offset, endpoint = string.find(match_relative_path, val..'/')
+        if offset ~= nil then
+          match_val = string.sub(match_relative_path, offset, endpoint-1)
+        else
+          match_val = match_relative_path
+        end
 
         if val == path_tail then
           return val, nested
@@ -77,10 +98,17 @@ local function set_root(args)
     end)()
 
     if ds ~= nil or ds == '' then
+      local offset
+      local target
+
       if not nested then
-        root = is_dir_exist(vim.fn.substitute(dir_full_path, ".*\\zs/"..ds.."\\ze$", "", ""))
+        offset = string.find(dir_full_path, ds..'$')
+        target = string.sub(dir_full_path, 1, offset-1)
+        root = is_dir_exist(target)
       else
-        root = is_dir_exist(vim.fn.substitute(dir_full_path, ".*\\zs/"..ds..".*", "", ""))
+        offset = string.find(dir_full_path, ds..'.*')
+        target = string.sub(dir_full_path, 1, offset-1)
+        root = is_dir_exist(target)
       end
 
       if root ~= nil then
