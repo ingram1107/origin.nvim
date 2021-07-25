@@ -142,6 +142,7 @@ local function setup(cfg_tbl)
   if cfg_tbl['default_source'] ~= nil and type(cfg_tbl['default_source']) == 'table' then
     default_source(cfg_tbl['default_source'])
   end
+
   if cfg_tbl['prompt'] ~= nil and type(cfg_tbl['prompt']) == 'boolean' then
     prompt = cfg_tbl['prompt']
   end
