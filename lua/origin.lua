@@ -12,6 +12,10 @@
   You should have received a copy of the GNU General Public License 
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
+local vim_set = require('cmd')
+local setup_cmd = require('cmd').cmd
+local setup_aug = require('cmd').augroup
+local setup_au = require('cmd').autocmd
 
 if vim.version().minor < 5 then
   vim.api.nvim_err_writeln("fatal: origin: require Neovim version 0.5+")
@@ -145,6 +149,34 @@ local function setup(cfg_tbl)
 
   if cfg_tbl['prompt'] ~= nil and type(cfg_tbl['prompt']) == 'boolean' then
     prompt = cfg_tbl['prompt']
+  end
+
+  if not vim_set.loaded_origin() then
+    vim.g.autochdir = vim_set.set_autochdir()
+
+    setup_cmd {
+      Origin = {
+        nargs = 0,
+        cmd = 'lua require("origin").origin()',
+      },
+      OriginSetDefaultRoot = {
+        nargs = '?',
+        complete = 'dir',
+        cmd = 'lua require("origin").set_root{"<args>"}',
+      },
+      OriginSetManualRoot = {
+        nargs = '?',
+        complete = 'dir',
+        cmd = 'lua require("origin").set_root{"<args>", true}',
+      },
+    }
+
+    setup_aug(
+      'Origin',
+      {
+        setup_au('VimEnter', '*', 'OriginSetDefaultRoot %:p:h'),
+      }
+    )
   end
 end
 
