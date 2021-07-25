@@ -22,11 +22,13 @@ if vim.version().minor < 5 then
   return
 end
 
+local M = {}
+
 local ft_table = {}
 local root = vim.loop.cwd()
 local prompt = true
 
-local function origin()
+function M.origin()
   vim.api.nvim_echo({{root, "Normal"}}, false, {})
 end
 
@@ -44,7 +46,7 @@ local function is_dir_exist(dir)
   return nil
 end
 
-local function set_root(args)
+function M.set_root(args)
   setmetatable(args, { __index = { manual = false } })
   local dir, manual = args[1] or args.dir, args[2] or args.manual
 
@@ -142,7 +144,7 @@ local function set_root(args)
   end
 end
 
-local function setup(cfg_tbl)
+function M.setup(cfg_tbl)
   if cfg_tbl['default_source'] ~= nil and type(cfg_tbl['default_source']) == 'table' then
     default_source(cfg_tbl['default_source'])
   end
@@ -180,8 +182,4 @@ local function setup(cfg_tbl)
   end
 end
 
-return {
-  origin = origin,
-  set_root = set_root,
-  setup = setup,
-}
+return M
