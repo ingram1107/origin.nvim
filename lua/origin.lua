@@ -46,6 +46,70 @@ local function is_dir_exist(dir)
   return nil
 end
 
+local function retrieve_match_token(ds, full_path)
+  local path_tail, match_relative_path, match_val
+  local offset, endpoint = string.find(full_path, '/'..ds..'$')
+
+  if offset ~= nil then
+    path_tail = string.sub(full_path, offset+1)
+  else
+    path_tail = full_path
+  end
+
+  offset = string.find(path_tail, ds..'/')
+  if offset ~= nil then
+    match_relative_path = string.sub(path_tail, offset)
+  else
+    match_relative_path = path_tail
+  end
+
+  offset, endpoint = string.find(match_relative_path, ds..'/')
+  if offset ~= nil then
+    match_val = string.sub(match_relative_path, offset, endpoint-1)
+  else
+    match_val = match_relative_path
+  end
+
+  return path_tail, match_val
+end
+
+local function find_match_source(dir)
+  local val_or_tab = ft_table[vim.bo.filetype]
+  local nested = false
+  local path_tail, match_val
+  local full_path = vim.fn.expand(dir)
+  if type(val_or_tab) ~= "table" then
+    local ds = val_or_tab
+
+    if ds ~= nil then
+    path_tail, match_val = retrieve_match_token(ds, full_path)
+
+      if ds == path_tail then
+        return ds, nested
+      elseif ds == match_val then
+        nested = true
+        return ds, nested
+      end
+    end
+
+    return ds, nested
+  end
+
+  local tab = val_or_tab
+  for _, ds in pairs(tab) do
+    path_tail, match_val = retrieve_match_token(ds, full_path)
+
+    if ds == path_tail then
+      return ds, nested
+    elseif ds == match_val then
+      nested = true
+      return ds, nested
+    end
+  end
+
+  return nil
+end
+
 function M.set_root(args)
   setmetatable(args, { __index = { manual = false } })
   local dir, manual = args[1] or args.dir, args[2] or args.manual
@@ -57,51 +121,7 @@ function M.set_root(args)
   local dir_full_path = vim.fn.expand(dir)
 
   if not manual then
-    local ds, nested = (function ()
-      local val_or_tab = ft_table[vim.bo.filetype]
-      if type(val_or_tab) ~= "table" then
-        return val_or_tab
-      end
-
-      local tab = val_or_tab
-      local full_path = vim.fn.expand(dir)
-      local nested = false
-      for _, val in pairs(tab) do
-        local path_tail
-        local match_relative_path
-        local match_val
-        local offset, endpoint = string.find(full_path, '/'..val..'$')
-
-        if offset ~= nil then
-          path_tail = string.sub(full_path, offset+1)
-        else
-          path_tail = full_path
-        end
-
-        offset = string.find(path_tail, val..'/')
-        if offset ~= nil then
-          match_relative_path = string.sub(path_tail, offset)
-        else
-          match_relative_path = path_tail
-        end
-
-        offset, endpoint = string.find(match_relative_path, val..'/')
-        if offset ~= nil then
-          match_val = string.sub(match_relative_path, offset, endpoint-1)
-        else
-          match_val = match_relative_path
-        end
-
-        if val == path_tail then
-          return val, nested
-        elseif val == match_val then
-          nested = true
-          return val, nested
-        end
-      end
-
-      return nil
-    end)()
+    local ds, nested = find_match_source(dir)
 
     if ds ~= nil or ds == '' then
       local offset
@@ -109,11 +129,23 @@ function M.set_root(args)
 
       if not nested then
         offset = string.find(dir_full_path, ds..'$')
-        target = string.sub(dir_full_path, 1, offset-1)
+
+        if offset ~= nil then
+          target = string.sub(dir_full_path, 1, offset-1)
+        else
+          target = dir_full_path
+        end
+
         root = is_dir_exist(target)
       else
         offset = string.find(dir_full_path, ds..'.*')
-        target = string.sub(dir_full_path, 1, offset-1)
+
+        if offset ~= nil then
+          target = string.sub(dir_full_path, 1, offset-1)
+        else
+          target = dir_full_path
+        end
+
         root = is_dir_exist(target)
       end
 
