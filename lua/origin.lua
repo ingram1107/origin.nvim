@@ -12,10 +12,10 @@
   You should have received a copy of the GNU General Public License 
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
-local vim_set = require('cmd')
+local vim_set = require('origin.utils')
 
 if vim.version().minor < 7 then
-  vim.api.nvim_err_writeln("fatal: origin: require Neovim version 0.7+")
+  vim.api.nvim_err_writeln('fatal: origin: require Neovim version 0.7+')
   return
 end
 
@@ -26,7 +26,7 @@ local root = vim.loop.cwd()
 local prompt = true
 
 function M.origin()
-  vim.api.nvim_echo({{root, "Normal"}}, false, {})
+  vim.api.nvim_echo({ { root, 'Normal' } }, false, {})
 end
 
 local function default_source(table)
@@ -45,24 +45,24 @@ end
 
 local function retrieve_match_token(ds, full_path)
   local path_tail, match_relative_path, match_val
-  local offset, endpoint = string.find(full_path, '/'..ds..'$')
+  local offset, endpoint = string.find(full_path, '/' .. ds .. '$')
 
   if offset ~= nil then
-    path_tail = string.sub(full_path, offset+1)
+    path_tail = string.sub(full_path, offset + 1)
   else
     path_tail = full_path
   end
 
-  offset = string.find(path_tail, ds..'/')
+  offset = string.find(path_tail, ds .. '/')
   if offset ~= nil then
     match_relative_path = string.sub(path_tail, offset)
   else
     match_relative_path = path_tail
   end
 
-  offset, endpoint = string.find(match_relative_path, ds..'/')
+  offset, endpoint = string.find(match_relative_path, ds .. '/')
   if offset ~= nil then
-    match_val = string.sub(match_relative_path, offset, endpoint-1)
+    match_val = string.sub(match_relative_path, offset, endpoint - 1)
   else
     match_val = match_relative_path
   end
@@ -75,11 +75,11 @@ local function find_match_source(dir)
   local nested = false
   local path_tail, match_val
   local full_path = vim.fn.expand(dir)
-  if type(val_or_tab) ~= "table" then
+  if type(val_or_tab) ~= 'table' then
     local ds = val_or_tab
 
     if ds ~= nil then
-    path_tail, match_val = retrieve_match_token(ds, full_path)
+      path_tail, match_val = retrieve_match_token(ds, full_path)
 
       if ds == path_tail then
         return ds, nested
@@ -112,7 +112,7 @@ function M.set_root(args)
   local dir, manual = args[1] or args.dir, args[2] or args.manual
 
   if dir == nil or dir == '' then
-    dir = vim.fn.expand("%:p:h")
+    dir = vim.fn.expand('%:p:h')
   end
 
   local dir_full_path = vim.fn.expand(dir)
@@ -125,20 +125,20 @@ function M.set_root(args)
       local target
 
       if not nested then
-        offset = string.find(dir_full_path, ds..'$')
+        offset = string.find(dir_full_path, ds .. '$')
 
         if offset ~= nil then
-          target = string.sub(dir_full_path, 1, offset-1)
+          target = string.sub(dir_full_path, 1, offset - 1)
         else
           target = dir_full_path
         end
 
         root = is_dir_exist(target)
       else
-        offset = string.find(dir_full_path, ds..'.*')
+        offset = string.find(dir_full_path, ds .. '.*')
 
         if offset ~= nil then
-          target = string.sub(dir_full_path, 1, offset-1)
+          target = string.sub(dir_full_path, 1, offset - 1)
         else
           target = dir_full_path
         end
@@ -166,9 +166,9 @@ function M.set_root(args)
 
   if prompt == true then
     if root ~= nil then
-      vim.api.nvim_echo({{"Change root directory to `"..root.."`", "Normal"}}, true, {})
+      vim.api.nvim_echo({ { 'Change root directory to `' .. root .. '`', 'Normal' } }, true, {})
     else
-      vim.api.nvim_echo({{"No change to root directory", "Normal"}}, true, {})
+      vim.api.nvim_echo({ { 'No change to root directory', 'Normal' } }, true, {})
     end
   end
 end
