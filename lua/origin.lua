@@ -17,8 +17,8 @@ local setup_cmd = require('cmd').cmd
 local setup_aug = require('cmd').augroup
 local setup_au = require('cmd').autocmd
 
-if vim.version().minor < 5 then
-  vim.api.nvim_err_writeln("fatal: origin: require Neovim version 0.5+")
+if vim.version().minor < 7 then
+  vim.api.nvim_err_writeln("fatal: origin: require Neovim version 0.7+")
   return
 end
 

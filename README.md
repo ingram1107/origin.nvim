@@ -5,7 +5,7 @@ directory.
 
 ## Requirement
 
-Neovim 0.5+
+Neovim 0.7+
 
 ## Installation
 
