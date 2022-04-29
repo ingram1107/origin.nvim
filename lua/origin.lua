@@ -13,9 +13,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>
 --]]
 local vim_set = require('cmd')
-local setup_cmd = require('cmd').cmd
-local setup_aug = require('cmd').augroup
-local setup_au = require('cmd').autocmd
 
 if vim.version().minor < 7 then
   vim.api.nvim_err_writeln("fatal: origin: require Neovim version 0.7+")
@@ -188,29 +185,19 @@ function M.setup(cfg_tbl)
   if not vim_set.loaded_origin() then
     vim.g.autochdir = vim_set.set_autochdir()
 
-    setup_cmd {
-      Origin = {
-        nargs = 0,
-        cmd = 'lua require("origin").origin()',
-      },
-      OriginSetDefaultRoot = {
-        nargs = '?',
-        complete = 'dir',
-        cmd = 'lua require("origin").set_root{"<args>"}',
-      },
-      OriginSetManualRoot = {
-        nargs = '?',
-        complete = 'dir',
-        cmd = 'lua require("origin").set_root{"<args>", true}',
-      },
-    }
+    vim.api.nvim_create_user_command('Origin', M.origin, { nargs = 0 })
+    vim.api.nvim_create_user_command('OriginSetDefaultRoot', function(args)
+      M.set_root({ args.args })
+    end, { nargs = '?', complete = 'dir' })
+    vim.api.nvim_create_user_command('OriginSetManualRoot', function(args)
+      M.set_root({ args.args, true })
+    end, { nargs = '?', complete = 'dir' })
 
-    setup_aug(
-      'Origin',
-      {
-        setup_au('VimEnter', '*', 'OriginSetDefaultRoot %:p:h'),
-      }
-    )
+    vim.api.nvim_create_augroup('Origin', {})
+    vim.api.nvim_create_autocmd('VimEnter', {
+      pattern = '*',
+      command = 'OriginSetDefaultRoot %:p:h',
+    })
   end
 end
 
