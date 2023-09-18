@@ -79,6 +79,33 @@ require('origin').setup {
 EOF
 ```
 
+If you want to prioritise the directory that contain `.git/` as root directory,
+turn on the `git` option from the setup. Note that this options will always
+prefer git repo as directory regardless of as default source directory you have
+been set.
+
+```lua
+require('origin').setup {
+  option = true,
+  default_source = {
+    lua = "lua",
+    c = { "src", "lib", "test" },
+  },
+}
+```
+
+```viml
+lua << EOF
+require('origin').setup {
+  option = true,
+  default_source = {
+    lua = "lua",
+    c = { "src", "lib", "test" },
+  },
+}
+EOF
+```
+
 ## Plugins Recommendations
 
 - [vim-rooter](https://github.com/airblade/vim-rooter) (main inspiration,
