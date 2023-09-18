@@ -74,7 +74,7 @@ local function find_match_source(dir)
   local val_or_tab = ft_table[vim.bo.filetype]
   local nested = false
   local path_tail, match_val
-  local full_path = vim.fn.expand(dir)
+  local full_path = vim.fs.dirname(dir)
   if type(val_or_tab) ~= 'table' then
     local ds = val_or_tab
 
@@ -111,11 +111,7 @@ function M.set_root(args)
   setmetatable(args, { __index = { manual = false } })
   local dir, manual = args[1] or args.dir, args[2] or args.manual
 
-  if dir == nil or dir == '' then
-    dir = vim.fn.expand('%:p:h')
-  end
-
-  local dir_full_path = vim.fn.expand(dir)
+  local dir_full_path = vim.fs.dirname(dir)
 
   if not manual then
     local ds, nested = find_match_source(dir)
