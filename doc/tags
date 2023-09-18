@@ -1,0 +1,12 @@
+:Origin	origin.txt	/*:Origin*
+OriginSetDefaultRoot	origin.txt	/*OriginSetDefaultRoot*
+OriginSetManualRoot	origin.txt	/*OriginSetManualRoot*
+origin.command	origin.txt	/*origin.command*
+origin.config	origin.txt	/*origin.config*
+origin.default_source	origin.txt	/*origin.default_source*
+origin.lua	origin.txt	/*origin.lua*
+origin.lua	origin.txt	/*origin.lua*
+origin.origin	origin.txt	/*origin.origin*
+origin.prompt	origin.txt	/*origin.prompt*
+origin.set_root	origin.txt	/*origin.set_root*
+origin.setup	origin.txt	/*origin.setup*

@@ -24,6 +24,7 @@ local M = {}
 local ft_table = {}
 local root = vim.loop.cwd()
 local prompt = true
+local git_prioritise = false
 
 function M.origin()
   vim.api.nvim_echo({ { root, 'Normal' } }, false, {})
@@ -113,7 +114,14 @@ function M.set_root(args)
 
   local dir_full_path = vim.fs.dirname(dir)
 
-  if not manual then
+  if git_prioritise then
+    for directory in vim.fs.parents(dir_full_path) do
+      if is_dir_exist(directory .. '/.git') == 1 then
+        root = directory
+        return
+      end
+    end
+  elseif not manual then
     local ds, nested = find_match_source(dir)
 
     if ds ~= nil or ds == '' then
@@ -172,6 +180,10 @@ end
 function M.setup(cfg_tbl)
   if cfg_tbl['default_source'] ~= nil and type(cfg_tbl['default_source']) == 'table' then
     default_source(cfg_tbl['default_source'])
+  end
+
+  if cfg_tbl['git'] == true then
+    git_prioritise = true
   end
 
   if cfg_tbl['prompt'] ~= nil and type(cfg_tbl['prompt']) == 'boolean' then
