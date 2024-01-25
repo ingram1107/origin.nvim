@@ -184,8 +184,8 @@ function M.setup(cfg_tbl)
     default_source(cfg_tbl['default_source'])
   end
 
-  if cfg_tbl['git'] == true then
-    git_enabled = true
+  if cfg_tbl['git'] ~= nil and type(cfg_tbl['git']) == 'boolean' then
+    git_enabled = cfg_tbl['git']
   end
 
   if cfg_tbl['prompt'] ~= nil and type(cfg_tbl['prompt']) == 'boolean' then
